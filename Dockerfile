@@ -30,7 +30,7 @@ RUN conda config --add channels anaconda-cluster \
        seaborn \
     && conda clean -yt \
     && conda clean -yp \
-    && bash -c 'source activate py34 && pip install hdfs pywebhdfs' \
+    && bash -c 'source activate py34 && pip install -q -U httpie hdfs pywebhdfs' \
     && bash -c 'source activate py34 && ipython profile create --parallel'
 
 EXPOSE 8888
