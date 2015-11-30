@@ -40,8 +40,8 @@ CMD ["notebook.sh"]
 
 # Add local files as late as possible to stay cache friendly
 COPY notebook.sh /usr/local/bin/
+COPY jupyter_notebook_config.py ${CONDA_USER_HOME}/.jupyter/
 COPY upload_ctrl_conf_hdfs.py /usr/local/bin/
 COPY download_ctrl_conf_hdfs.py /usr/local/bin/
-COPY jupyter_notebook_config.py ${CONDA_USER_HOME}/.jupyter/
 COPY ipcontroller_config.py ${CONDA_USER_HOME}/.ipython/profile_default/
 COPY ipengine_config.py ${CONDA_USER_HOME}/.ipython/profile_default/
