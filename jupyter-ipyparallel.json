@@ -1,0 +1,95 @@
+{
+  "id": "/jupyter-ipyparallel",
+  "apps": [
+    {
+      "id": "/jupyter-ipyparallel/controller",
+      "instances": 1,
+      "cpus": 1,
+      "mem": 1024,
+      "cmd": "bash -c 'source activate py34 && sleep 60 && (ipcontroller &) && sleep 5 && upload_ctrl_conf_hdfs.py && jupyter notebook $* '",
+      "labels": {
+        "HAPROXY_GROUP": "external"
+      },
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "vishnumohan/ipyparallel-notebook",
+          "forcePullImage": true,
+          "network": "BRIDGE",
+          "portMappings": [
+            { "containerPort": 8888, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" },
+            { "containerPort": 0, "hostPort": 0, "protocol": "tcp" }
+          ]
+        }
+      },
+      "healthChecks": [
+        {
+          "portIndex": 0,
+          "protocol": "HTTP",
+          "path": "/",
+          "gracePeriodSeconds": 30,
+          "intervalSeconds": 60,
+          "timeoutSeconds": 20,
+          "maxConsecutiveFailures": 3,
+          "ignoreHttp1xx": false
+        }
+      ],
+      "requirePorts": true,
+      "backoffSeconds": 1,
+      "backoffFactor": 1.15,
+      "maxLaunchDelaySeconds": 3600
+    },
+    {
+      "id": "/jupyter-ipyparallel/engine",
+      "instances": 1,
+      "cpus": 1,
+      "mem": 1024,
+      "cmd": "bash -c 'source activate py34 && download_ctrl_conf_hdfs.py && ( jupyter notebook $* &) && ipengine'",
+      "labels": {
+        "HAPROXY_GROUP": "external"
+      },
+      "container": {
+        "type": "DOCKER",
+        "docker": {
+          "image": "vishnumohan/ipyparallel-notebook",
+          "forcePullImage": true,
+          "network": "BRIDGE",
+          "portMappings": [
+            { "containerPort": 8888, "hostPort": 0, "protocol": "tcp" }
+          ]
+        }
+      },
+      "healthChecks": [
+        {
+          "portIndex": 0,
+          "protocol": "HTTP",
+          "path": "/",
+          "gracePeriodSeconds": 30,
+          "intervalSeconds": 60,
+          "timeoutSeconds": 20,
+          "maxConsecutiveFailures": 3,
+          "ignoreHttp1xx": false
+        }
+      ],
+      "requirePorts": true,
+      "backoffSeconds": 1,
+      "backoffFactor": 1.15,
+      "maxLaunchDelaySeconds": 3600,
+      "dependencies": [
+        "/jupyter-ipyparallel/controller"
+      ]
+    }
+  ]
+}
