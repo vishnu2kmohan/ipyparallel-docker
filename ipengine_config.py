@@ -2,7 +2,7 @@ import os
 import requests
 
 
-MESOS_DNS_SRV_QUERY_TEMPLATE = 
+MESOS_DNS_SRV_QUERY_TEMPLATE = \
    'http://master.mesos:8123/v1/services/_{0}._tcp.marathon.mesos'
 
 if 'MARATHON_APP_ID' in os.environ:
