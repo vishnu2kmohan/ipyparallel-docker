@@ -6,13 +6,14 @@ import stat
 
 PEM_FILE = os.path.join(jupyter_data_dir(), 'notebook.pem')
 
+# Setup the Notebook to listen on all interfaces on port 8888 by default
 c.NotebookApp.ip = '*'
+c.NotebookApp.port = 8888
 
-# If started by Marathon and if $PORT is set, use it
-if 'PORT' in os.environ:
-    c.NotebookApp.port = int(os.environ['PORT'])
-else
-    c.NotebookApp.port = 8888
+# To use Docker Host Networking under Marathon, provided PORT_8888 is not set:
+if 'PORT_8888' not in os.environ:
+    if 'PORT0' in os.environ:
+        c.NotebookApp.port = int(os.environ['PORT0'])
 
 c.NotebookApp.open_browser = False
 c.NotebookApp.server_extensions.append('ipyparallel.nbextension')
@@ -39,6 +40,9 @@ if 'USE_HTTPS' in os.environ:
 
 # Set a password if PASSWORD is set
 if 'PASSWORD' in os.environ:
-    from IPython.lib import passwd
+    # Hashed password to use for web authentication.
+    # To generate, type in a python/IPython shell:
+    #   from notebook.auth import passwd; passwd()
+    # The string should be of the form type:salt:hashed-password.
     c.NotebookApp.password = os.environ['PASSWORD']
     del os.environ['PASSWORD']
